@@ -1,1 +1,71 @@
-{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"start_location":"Bern","end_location":"Shanghai","journey_date":"02.05.2018","vehicle":"plane"},"geometry":{"type":"LineString","coordinates":[[7.481689453125,46.95776134668866],[121.497802734375,31.22219703210317]]}},{"type":"Feature","properties":{"start_location":"Shanghai","end_location":"Xi'an","journey_date":"06.05.2018","vehicle":"train"},"geometry":{"type":"LineString","coordinates":[[121.53076171875,31.22219703210317],[108.984375,34.252676117101515]]}}]}
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "start_location": "Bern",
+        "end_location": "Shanghai",
+        "journey_date": "02.05.2018",
+        "vehicle": "plane"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            7.481689453125,
+            46.95776134668866
+          ],
+          [
+            121.497802734375,
+            31.22219703210317
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "start_location": "Shanghai",
+        "end_location": "Xi'an",
+        "journey_date": "06.05.2018",
+        "vehicle": "train"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            121.53076171875,
+            31.22219703210317
+          ],
+          [
+            108.984375,
+            34.252676117101515
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "start_location": "Xi'an",
+        "end_location": "Bejing",
+        "journey_date": "08.05.2018",
+        "vehicle": "train"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            108.984375,
+            34.25494631082515
+          ],
+          [
+            116.38916015624999,
+            39.90973623453719
+          ]
+        ]
+      }
+    }
+  ]
+}
