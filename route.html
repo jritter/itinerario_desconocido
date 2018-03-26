@@ -382,16 +382,33 @@
         if (error) throw error;
 
         visited_points = turf.explode(results[1]);
-        countries = topojson.feature(results[0], results[0].objects.ne_110m_admin_0_countries);
+        var countries = topojson.feature(results[0], results[0].objects.ne_110m_admin_0_countries);
+        var countries_visited = [];
 
-        countries_flattened = turf.flatten(countries)
-
-        countries_visited = [];
+        var format = d3.time.format("%d.%m.%Y");
+        var now = new Date();
 
         for (var i = 0; i < visited_points.features.length; i++){
-          for (var j = 0; j < countries_flattened.features.length; j++){
-            if (turf.booleanWithin(visited_points.features[i], countries_flattened.features[j])){
-              countries_visited.push(countries_flattened.features[j]);
+
+          var point_date = format.parse(visited_points.features[i].properties.journey_date);
+          
+
+          if (point_date > now){
+            console.log("future");
+          }
+          else {
+            console.log("past");
+          }
+          console.log(point_date);
+
+          
+
+          for (var j = 0; j < countries.features.length; j++){
+            country_parts = turf.flatten(countries.features[j])
+            for (var k = 0; k < country_parts.features.length; k++){
+              if (turf.booleanWithin(visited_points.features[i], country_parts.features[k])){
+                countries_visited.push(countries.features[j]);
+              }
             }
           }
         }
