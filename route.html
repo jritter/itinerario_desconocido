@@ -47,8 +47,13 @@
   .route {
     fill: none;
     stroke: #BC4747;
-    stroke-width: 1.5px;
     visibility: visible;
+    margin: 20px;
+  }
+
+  .planned {
+    stroke-width: 2px;
+    stroke-dasharray: 8, 8;
   }
 
   .routepoint {
@@ -67,6 +72,17 @@
   .point {
     fill: #FFFFFF;
   }
+
+  div.tooltip {	
+    position: absolute;			
+    text-align: center;
+    padding: 5px;		
+    font: 12px sans-serif;		
+    background: lightsteelblue;	
+    border: 0px;		
+    border-radius: 3px;			
+    pointer-events: none;			
+}
 </style>
 <div id="map"></div>
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -381,14 +397,29 @@
       .awaitAll(function(error, results) {
         if (error) throw error;
 
-        visited_points = turf.explode(results[1]);
+        
+        // create points out of the features. This creates 2 points per leg
+        // we need a deep copy of that because otherwise we can't change the properties of a single point.
+        visited_points = JSON.parse(JSON.stringify(turf.explode(results[1])));
+        
         var countries = topojson.feature(results[0], results[0].objects.ne_110m_admin_0_countries);
         var countries_visited = [];
 
         var format = d3.time.format("%d.%m.%Y");
         var now = new Date();
 
+       
         for (var i = 0; i < visited_points.features.length; i++){
+
+          // now we assign names to the points.
+          // even points --> start_location
+          // odd points --> end_location
+          
+          if (i % 2 === 0){
+            visited_points.features[i].properties.location = visited_points.features[i].properties.start_location;
+          } else {
+            visited_points.features[i].properties.location = visited_points.features[i].properties.end_location;
+          }
 
           var point_date = format.parse(visited_points.features[i].properties.journey_date);
           
@@ -399,9 +430,6 @@
           else {
             console.log("past");
           }
-          console.log(point_date);
-
-          
 
           for (var j = 0; j < countries.features.length; j++){
             country_parts = turf.flatten(countries.features[j])
@@ -413,11 +441,18 @@
           }
         }
 
+        console.log(visited_points);
+
+        // we don't need duplicates in the list...
         var countries_visited = countries_visited.filter(function(elem, pos) {
           return countries_visited.indexOf(elem) == pos;
         });
 
-        console.log(countries_visited);
+        // we need a div for the tooltis
+        var div = d3.select("body").append("div")	
+        .attr("class", "tooltip")				
+        .style("opacity", 0);
+
 
 
         d3.selectAll("svg").insert("path", ".graticule").datum({
@@ -436,7 +471,20 @@
         d3.selectAll("svg").selectAll(".routepoint")
         .data(visited_points.features)
         .enter().append("path")
-        .attr("class", "routepoint");
+        .attr("class", "routepoint")
+        .on("mouseover", function(d) {
+            div.transition()		
+                .duration(200)		
+                .style("opacity", .9);		
+            div	.html(d.properties.location + "<br/>"  + d.properties.journey_date)	
+                .style("left", (d3.event.pageX) + "px")		
+                .style("top", (d3.event.pageY - 28) + "px");	
+        })					
+        .on("mouseout", function(d) {
+            div.transition()		
+                .duration(500)		
+                .style("opacity", 0);	
+        });
 
 
 
